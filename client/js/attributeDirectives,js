@@ -1,0 +1,12 @@
+define([
+    'app'
+],
+function(app) {
+    'use strict';
+    console.log("loaded the attributes directives");
+    app.directive('addAttribute', [function() {
+        return {
+
+        };
+    }];
+});

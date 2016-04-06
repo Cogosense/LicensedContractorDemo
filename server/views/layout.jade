@@ -1,0 +1,13 @@
+doctype html
+
+html
+    head
+        title= title
+        if env === 'dev'
+            script(data-main="js/main" src="/lib/requirejs/require.js")
+        else
+            script(data-main="js/main.min" src="/lib/requirejs/require.js")
+
+  body
+    .container
+        block content

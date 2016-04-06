@@ -1,0 +1,28 @@
+{
+  "name": "licensed-contractor",
+  "description": "Restful multi source data sharing API",
+  "main": "main.js",
+  "authors": [
+    "Steve Williams <steve.williams@telxio.com>"
+  ],
+  "license": "Commercial",
+  "moduleType": [
+    "amd"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "client/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.3",
+    "requirejs": "^2.2.0",
+    "angular-animate": "^1.5.3",
+    "angular-bootstrap": "^1.2.5"
+  }
+}

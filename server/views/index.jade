@@ -1,0 +1,7 @@
+extends layout
+
+block content
+    div(ng-controller="LicensedContractorAttributes")
+        select(ng-model="selectedItem" ng-options="val for val in attributePickList")
+        div
+            p selectedItem = {{selectedItem}}
