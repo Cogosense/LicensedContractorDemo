@@ -1,14 +1,12 @@
 define([
     'angular',
+    'angularResource',
     'angularBootstrap'
 ],
 function(angular) {
     'use strict';
     console.log("loading the LicensedContractor App");
-    return angular.module('LicensedContractor', ['ui.bootstrap'])
-    .controller( 'LicensedContractorAttributes', ['$scope', function($scope) {
-        console.log("activated the main controller");
-        $scope.attributePickList = ["Planning", "Execution", "Closed"];
-        $scope.selectedItem = "[not selected]";
-    }]);
+    return angular.module('LicensedContractorApp', ['ui.bootstrap', 'publisherServices']).run(function($rootScope){
+        $rootScope.currentPublisher = { _id: "",  publisherName: "No Publisher"};
+    });
 });

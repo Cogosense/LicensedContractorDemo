@@ -1,7 +1,52 @@
 extends layout
 
 block content
-    div(ng-controller="LicensedContractorAttributes")
+    h1 BCSA Licensed Contractor Extensible API Demonstration
+    .well
+        b {{ currentPublisher.publisherName }}
+        span  is the selected publisher
+    uib-tabset(active="active")
+        uib-tab(index="0" heading="Manage Publishers")
+            div(ng-controller="publisherController")
+                fieldset.well
+                    legend New Publisher
+                    .form-group
+                        label(for="publisher-create") New Publisher Name
+                        input.form-control#publisher-create(ng-model="newPublisherName" placeholder="Name for the new publisher")
+                        button.btn.btn-default(ng-click="createPublisher()") Create New Publisher
+                fieldset.well
+                    legend Active Publisher
+                    .input-group
+                        span.input-group-btn
+                            button.btn.btn-danger.btn-small(ng-click="removePublisher()") X
+                        select.form-control(ng-model="$root.currentPublisher" ng-options="val.publisherName for val in publisherList")
+        uib-tab(index="1" heading="Attribute Editor")
+            div(ng-controller="attributeController")
+                fieldset.well
+                    legend New Record Attribute Set
+                    .form-group
+                        label(for="name-create") New Attribute Set Name
+                        input.form-control#name-create(ng-model="newAttributeSetName" placeholder="Name for the new record")
+                        button.btn.btn-default(ng-click="createNewAttributeSetName") Create New Empty Attribute Set
+                fieldset.well
+                    legend Edit Record Attribute Set
+                    .form-group
+                        label(for="name-select") Record Name
+                        .input-group
+                            span.input-group-btn
+                                button.btn.btn-danger.btn-small(ng-click="removeAttributeSet()") X
+                            select.form-control#name-select(ng-model="selectedItem" ng-options="val for val in attributePickList")
+                div(ng-repeat="attribute in modelAttributes" model-attribute="attribute")
+        uib-tab(index="2" heading="Query Licensed Contractor")
+        uib-tab(index="3" heading="Search Licensed Contractor")
+        uib-tab(index="4" heading="Add Secondary Data")
+
+    //div(ng-controller="lcAttributesController")
         select(ng-model="selectedItem" ng-options="val for val in attributePickList")
         div
             p selectedItem = {{selectedItem}}
+        div(ng-repeat="attribute in modelAttributes" model-attribute="attribute")
+        .col-sm-1
+            button.btn.btn-default.lc-add-attribute(ng-click="addAttribute()") Add
+        .col-sm-1
+            button.btn.btn-default.lc-remove-attribute(ng-click="removeAttribute()") Remove

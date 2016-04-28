@@ -33,6 +33,10 @@ module.exports = function (grunt) {
                 files: ['node_modules/jade/runtime.js}'],
                 tasks: ['copy:jade']
             },
+            bootstrap: {
+                files: ['node_modules/bootstrap/dist/css/bootstrap.min.css}'],
+                tasks: ['copy:bootstrap']
+            },
             app: {
                 files: ['client/{,*/}*.js'],
                 tasks: ['copy:scripts']
@@ -147,6 +151,11 @@ module.exports = function (grunt) {
                 files: [
                     { expand: true, cwd: 'node_modules/jade/', src: 'runtime.js', dest: 'public/lib/jade/' }
                 ]
+            },
+            bootstrap: {
+                files: [
+                    { expand: true, cwd: 'node_modules/bootstrap/dist/css', src: 'bootstrap.min.css', dest: 'public/lib/bootstrap/dist/css/' }
+                ]
             }
         },
         clean: {
@@ -176,6 +185,7 @@ module.exports = function (grunt) {
             'copy:scripts',
             'copy:resources',
             'copy:jade',
+            'copy:bootstrap',
             'open',
             'concurrent:watch'
         ]);
@@ -189,7 +199,8 @@ module.exports = function (grunt) {
             'jade:production',
             'copy:scripts',
             'copy:resources',
-            'copy:jade'
+            'copy:jade',
+            'copy:bootstrap'
         ]);
     });
 
@@ -202,6 +213,7 @@ module.exports = function (grunt) {
             'copy:scripts',
             'copy:resources',
             'copy:jade',
+            'copy:bootstrap',
             'requirejs:app',
             'clean:release'
         ]);

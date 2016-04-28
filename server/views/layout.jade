@@ -3,6 +3,9 @@ doctype html
 html
     head
         title= title
+
+        link(rel='stylesheet', href='/lib/bootstrap/dist/css/bootstrap.min.css')
+
         if env === 'dev'
             script(data-main="js/main" src="/lib/requirejs/require.js")
         else

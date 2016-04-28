@@ -7,6 +7,9 @@ requirejs.config({
         'angularAnimate' : {
             deps: ['angular']
         },
+        'angularResource' : {
+            deps: ['angular']
+        },
         'angularBootstrap' : {
             deps: ['angular', 'angularAnimate']
         }
@@ -21,6 +24,7 @@ requirejs.config({
          * bower modules
          */
         angular: '../lib/angular/angular',
+        'angularResource': '../lib/angular-resource/angular-resource.min',
         'angularAnimate': '../lib/angular-animate/angular-animate.min',
         'angularBootstrap': '../lib/angular-bootstrap/ui-bootstrap-tpls.min',
         /*
@@ -34,8 +38,9 @@ requirejs.config({
  * angular is loaded first
  */
 require([
-    'angular',
-    'app'
-], function(angular) {
-    angular.bootstrap(document, ['LicensedContractor']);
+    'app',
+    'attribute',
+    'publisher'
+], function() {
+    angular.bootstrap(document, ['LicensedContractorApp']);
 });
