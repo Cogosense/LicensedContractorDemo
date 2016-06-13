@@ -1,5 +1,47 @@
-.form-group.row
-    label.col-sm-12(for="name") Attribute Name
-    input.form-control#name(type='text')
-    label.col-sm-12(for="label") Attribute Label
-    input.form-control#label(type='text')
+.panel.panel-default(ng-show="currentAttributeSet.ownerId == $root.currentPublisher._id || !currentAttributeSet.attributes[$index].restrict")
+    .panel-body
+        fieldset(ng-show="currentAttributeSet.ownerId == $root.currentPublisher._id")
+            .form-group(ng-show="currentAttributeSet.ownerId == $root.currentPublisher._id")
+                button.btn.btn-success.btn-small(ng-click="addAttributeBefore($index)") +
+                button.btn.btn-danger.btn-small(ng-click="removeAttribute($index)" ng-show="currentAttributeSet.attributes.length - 1") -
+        fieldset(ng-disabled="currentAttributeSet.ownerId != $root.currentPublisher._id")
+            .form-group
+                label(for="attribute-label") Attribute Label
+                input.form-control#attribute-label(ng-model="currentAttributeSet.attributes[$index].label" placeholder="Displayed Name for Attribute")
+            .form-group
+                label(for="attribute-desc") Attribute Description
+                input.form-control#attribute-desc(ng-model="currentAttributeSet.attributes[$index].desc" placeholder="Description of the Purpose and Use of the Attribute")
+        fieldset(ng-show="currentAttributeSet.ownerId == $root.currentPublisher._id")
+            .form-group
+                label(for="attribute-name") Attribute Name
+                input.form-control#attribute-name(ng-model="currentAttributeSet.attributes[$index].name" placeholder="Atrribute Name in the JSON object")
+            .form-group
+                label(for="attribute-type") Attribute Type
+                select.form-control#attribute-type(ng-model="currentAttributeSet.attributes[$index].type" ng-options="opt disable when opt.indexOf('--') == 0 for opt in filteredDataTypes = (dataTypes | filter:'!' + currentAttributeSet.recordName:true)" ng-change="changeDataTypeRef($index)")
+                    option(value='' disabled hidden selected='selected') Please Set Attribute Data Type
+                .form-group.row.col-sm-10.col-sm-offset-1
+                    label
+                        input(type="checkbox" ng-model="currentAttributeSet.attributes[$index].typeIsList")
+                        |  Type is a list of {{currentAttributeSet.attributes[$index].type}}
+            .form-group(ng-show="currentAttributeSet.attributes[$index].type === 'enum'")
+                label(for="attribute-enum-val") Enumerated Values
+                input.form-control#attribute-enum-val(ng-model="currentAttributeSet.attributes[$index].enumValues" ng-list="," ng-trim="true" placeholder="ENUM values seperated by commas")
+
+            .form-group
+                label
+                    input(type="checkbox" ng-model="currentAttributeSet.attributes[$index].available")
+                    |  Retrieve Attribute from Data Source
+            .form-group
+                label
+                    input(type="checkbox" ng-model="currentAttributeSet.attributes[$index].restrict")
+                    |  Attribute Visible to Publisher Only 
+            .form-group
+                label
+                    input(type="checkbox" ng-model="currentAttributeSet.attributes[$index].summary")
+                    |  Use in summary table when presenting matching records
+            .form-group
+                label
+                    input(type="checkbox" ng-model="currentAttributeSet.attributes[$index].searchable")
+                    |  This field is searchable
+            .form-group
+                button.btn.btn-success.btn-small(ng-click="addAttributeAfter($index)") +

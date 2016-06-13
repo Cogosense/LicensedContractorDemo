@@ -39,8 +39,9 @@ requirejs.config({
  */
 require([
     'app',
-    'attribute',
-    'publisher'
+    'publisher',
+    'attributeSet',
+    'licensedContractor'
 ], function() {
     angular.bootstrap(document, ['LicensedContractorApp']);
 });

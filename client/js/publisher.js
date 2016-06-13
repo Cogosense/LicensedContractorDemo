@@ -3,7 +3,7 @@ define([
 ],
 function(app) {
     'use strict';
-    console.log("loaded the publisher");
+    console.log("loaded the publisher controller");
 
     function PublisherModel(name){
         this.publisherName = name;
@@ -11,13 +11,18 @@ function(app) {
 
     var publisherServices = angular.module('publisherServices', ['ngResource']);
 
-    publisherServices.factory('Publisher', ['$resource', function($resource) {
+    publisherServices.factory('PublisherService', ['$resource', function($resource) {
         return $resource('/publisher/:id');
     }]);
 
-    app.controller('publisherController', ['$scope', '$rootScope', 'Publisher', function($scope, $rootScope, Publisher){
+    app.controller('publisherController', ['$scope', '$rootScope', 'PublisherService', function($scope, $rootScope, PublisherService){
         console.log("activated the publisher controller");
-        $scope.publisherList = Publisher.query();
+        $scope.publisherList = PublisherService.query(function(){
+            for(var i = 0 ; i < $scope.publisherList.length; ++i) {
+                var publisher = $scope.publisherList[i];
+                $rootScope.publisherLookup[publisher._id] = publisher;
+            }
+        });
 
         $scope.createPublisher = function(){
             console.log("createPublisher() clicked");
@@ -26,11 +31,11 @@ function(app) {
                     return obj.publisherName === $scope.newPublisherName;
                 });
                 if (found.length === 0) {
-                    var publisher = new Publisher();
-                    publisher = new PublisherModel($scope.newPublisherName);
-                    Publisher.save(publisher, function(publisher) {
+                    var publisher = new PublisherModel($scope.newPublisherName);
+                    PublisherService.save(publisher, function(publisher) {
                         $scope.publisherList.push(publisher);
                         $rootScope.currentPublisher = publisher;
+                        $rootScope.publisherLookup[publisher._id] = publisher;
                     });
                 }
                 $scope.newPublisherName = "";
@@ -40,24 +45,16 @@ function(app) {
             console.log("removePublisher() clicked");
             for(var i = $scope.publisherList.length-1; i >= 0; --i){
                 if ($scope.publisherList[i]._id === $rootScope.currentPublisher._id) {
-                    Publisher.remove({ id: $scope.publisherList[i]._id });
+                    PublisherService.remove({ id: $scope.publisherList[i]._id });
                     $scope.publisherList.splice(i, 1);
+                    delete $rootScope.publisherLookup[$scope.publisherList[i]._id];
                 }
             }
             $rootScope.currentPublisher = { _id: "", publisherName: "No publisher" };
         };
-    }]);
-    app.directive('modelAttribute', [function() {
-        console.log('modelAttribute called');
-        return {
-            restrict: 'A',
-            template: function() { return "<p> Hello";}
-        };
-    }]);
-    app.directive('removeAttribute', [function() {
-        console.log('removeAttribute called');
-        return {
-            restrict: 'C'
+        $scope.changePublisher = function(){
+            console.log("changePublisher() called");
+            $rootScope.$broadcast('changePublisher');
         };
     }]);
 });

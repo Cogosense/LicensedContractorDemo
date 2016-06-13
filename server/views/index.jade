@@ -8,45 +8,61 @@ block content
     uib-tabset(active="active")
         uib-tab(index="0" heading="Manage Publishers")
             div(ng-controller="publisherController")
-                fieldset.well
+                form.well
                     legend New Publisher
                     .form-group
                         label(for="publisher-create") New Publisher Name
                         input.form-control#publisher-create(ng-model="newPublisherName" placeholder="Name for the new publisher")
+                    .form-group
                         button.btn.btn-default(ng-click="createPublisher()") Create New Publisher
-                fieldset.well
+                form.well
                     legend Active Publisher
                     .input-group
                         span.input-group-btn
                             button.btn.btn-danger.btn-small(ng-click="removePublisher()") X
-                        select.form-control(ng-model="$root.currentPublisher" ng-options="val.publisherName for val in publisherList")
+                        select.form-control(required ng-model="$root.currentPublisher" ng-options="val.publisherName for val in publisherList" ng-change="changePublisher()")
+                            option(value='' disabled hidden selected='selected') Please Set the Publisher
+
         uib-tab(index="1" heading="Attribute Editor")
-            div(ng-controller="attributeController")
-                fieldset.well
+            div(ng-controller="attributeSetController")
+                form.well
                     legend New Record Attribute Set
                     .form-group
-                        label(for="name-create") New Attribute Set Name
-                        input.form-control#name-create(ng-model="newAttributeSetName" placeholder="Name for the new record")
-                        button.btn.btn-default(ng-click="createNewAttributeSetName") Create New Empty Attribute Set
-                fieldset.well
-                    legend Edit Record Attribute Set
+                        label(for="attribute-set-create") New Attribute Set Name
+                        input.form-control#attribute-set-create(ng-model="newAttributeSetName" placeholder="Name for the new record")
                     .form-group
-                        label(for="name-select") Record Name
+                        button.btn.btn-default(ng-click="createAttributeSet()") Create Empty Attribute Set
+                form.well
+                    legend Active Attribute Set
+                    .form-group
                         .input-group
                             span.input-group-btn
                                 button.btn.btn-danger.btn-small(ng-click="removeAttributeSet()") X
-                            select.form-control#name-select(ng-model="selectedItem" ng-options="val for val in attributePickList")
-                div(ng-repeat="attribute in modelAttributes" model-attribute="attribute")
-        uib-tab(index="2" heading="Query Licensed Contractor")
-        uib-tab(index="3" heading="Search Licensed Contractor")
-        uib-tab(index="4" heading="Add Secondary Data")
+                            select.form-control(required ng-model="currentAttributeSet" ng-click="oldVal=currentAttributeSet" ng-change="changeAttributeSet(oldVal)" ng-options="(val.recordName + ' (' + $root.publisherLookup[val.ownerId].publisherName + ')') for val in attributeSetList")
+                                option(value='' disabled hidden selected='selected') Please Set the Attribute Set
+                    fieldset(ng-show="currentAttributeSet")
+                        legend Primary record
+                        .form-group(ng-show="currentAttributeSet.ownerId == $root.currentPublisher._id")
+                            label(for="attribute-set-endpoint") API Endpoint Specification for Data Source
+                            input.form-control#attribute-set-endpoint(ng-model="currentAttributeSet.endPoint" placeholder="API Endpoint specification for the data source e.g. /contractor/:id")
+                        .form-group
+                            .attributes(ng-repeat="attribute in currentAttributeSet.attributes" model-attribute="attribute")
 
-    //div(ng-controller="lcAttributesController")
-        select(ng-model="selectedItem" ng-options="val for val in attributePickList")
-        div
-            p selectedItem = {{selectedItem}}
-        div(ng-repeat="attribute in modelAttributes" model-attribute="attribute")
-        .col-sm-1
-            button.btn.btn-default.lc-add-attribute(ng-click="addAttribute()") Add
-        .col-sm-1
-            button.btn.btn-default.lc-remove-attribute(ng-click="removeAttribute()") Remove
+                        legend {{$root.currentPublisher.publisherName}} Adornments
+                        .panel.panel-default
+                            .panel-body
+                                .form-group
+                                    .my-adornments(ng-repeat="adornment in filteredPublisherRecordList = (currentPublisherRecordList | filter:{_id: '!' + currentAttributeSet._id})" model-adornment="adornment")
+                                    p(ng-show="filteredPublisherRecordList.length == 0") No adornment records available
+
+                        legend All Attached Adornments
+                        .panel.panel-default
+                            .panel-body
+                                .form-group
+                                    .all-adornments(ng-repeat="adornmentId in currentAttributeSet.adornments")
+                                        p(ng-init="adornment = (attributeSetList | filter:{_id: adornmentId})[0]") {{adornment.recordName}} ({{$root.publisherLookup[adornment.ownerId].publisherName}})
+
+        uib-tab(index="2" heading="Licensed Contractor")
+            div(ng-controller="licensedContractorController")
+
+        uib-tab(index="4" heading="Add Secondary Data")
