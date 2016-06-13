@@ -9,7 +9,6 @@ var Attributes = new mongoose.Schema({
     typeIsList  : Boolean,
     typeIsSet   : Boolean,
     enumValues  : [String],
-    available   : Boolean,
     restrict    : Boolean,
     summary     : Boolean,
     searchable  : Boolean

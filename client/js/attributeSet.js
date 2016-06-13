@@ -26,7 +26,6 @@ function(app, Templates) {
         this.desc = "";
         this.name = "";
         this.type = "";
-        this.available = false;
         this.restrict = false;
         this.summary = false;
         this.searchable = false;

@@ -26,11 +26,6 @@
             .form-group(ng-show="currentAttributeSet.attributes[$index].type === 'enum'")
                 label(for="attribute-enum-val") Enumerated Values
                 input.form-control#attribute-enum-val(ng-model="currentAttributeSet.attributes[$index].enumValues" ng-list="," ng-trim="true" placeholder="ENUM values seperated by commas")
-
-            .form-group
-                label
-                    input(type="checkbox" ng-model="currentAttributeSet.attributes[$index].available")
-                    |  Retrieve Attribute from Data Source
             .form-group
                 label
                     input(type="checkbox" ng-model="currentAttributeSet.attributes[$index].restrict")
