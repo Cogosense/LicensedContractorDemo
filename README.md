@@ -285,8 +285,8 @@ input field.)
 3. Add CORS support for data sources - see __XDomain__ at https://github.com/jpillora/xdomain
 
 4. Allow the key that links the data sources to be configurable. It is currently hard coded
-to __"@i_id"__, This is mongodb specific and really should be a data attribute instead, not a meta
-attribute.
+to __"@_id"__, This is mongodb specific and really should be a attribute of the data being
+described.
 
 5. Deleting a __Publisher__ does not cleanup any AttributeSers owned by the Publisher. They are 
 eft dangling with no owner.
@@ -296,18 +296,18 @@ specify the auth tokens. This could be down directly in the attribute set. Speci
 given to this if a publisher wishes to restrict access to a subset of other publishers, in which
 case API tokens may need to be provisioned in the publisher record keyed by __Attribute Set__ owner id.
 
-7. In the attribute editor when defining a simple collection, the API endpoint is not needed, so it is
+7. In the attribute editor when defining a User defined type, the API endpoint is not needed, so it is
 left blank.  It may be better to have an initial select for the record type:
     * Primary Attribute Set
     * Adornment Attribute Set
     * Simple Collection
-Then the API endpoint can be hidden (onlong with the adornments)
+Then the API endpoint can be hidden (along with the adornments list)
 
 8. An attribute set name cannot be changed - the record has to be deleted and recreated with the new
 name.
 
-9. The Attribute Editor only correctly handles types of "text" and "key". Support for the other types
-has not been coded yet.
+9. The Attribute Viewer only correctly handles types of "text" and "key". Support for the other types
+has not been coded yet. (See __11__ below also).
 
 10. The description field in each attribute is currently not used. The plan is to use it as a tooltip
 for each field.
