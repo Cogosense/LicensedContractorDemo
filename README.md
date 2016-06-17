@@ -156,36 +156,49 @@ Client side controls are trivial to setup,
 This demo focuses on the techniques required to support server side tabular control in
 AngularJS ui-grid, using an Express/Mongoose/MongoDB back end.
 
-For other services to support server side control, the REST API Query operation must support
+For services to support server side control, the REST API Query operation must support
 the following query parameters.
 
-* <b>__sort</b>   is a list of field names seperated by commas. The highest priority isort
-first is first. A descending sort is used if the first character in the field name is '-'.
-    e.g. ?__sort='field1,-field2'
-* <b>__skip</b>   is used for pagination. It is an integer used to skip records at the
-start of the returned matching set.
-    e.g. ?__skip=100
-* <b>__limit</b>  is used for pagination. It is an integer that is used to limit the size
-of the returned record set.
-    e.g. ?__limit=25
+* <b>\_\_sort</b>   is a list of field names seperated by commas. The highest priority sort
+first is first. A descending sort is used if the first character in the field name is '-', e.g.
 
-    A query of __skip=0&__limit=25 returns the first page of 25 records
-    A query of __skip=25__limit=25 returns the second page of 25 records
-    etc.
+    ?__sort='field1,-field2'
 
-* <b>__select</b> is a list of field names seperated by commas. These are the fields that
+* <b>\_\_skip</b>   is used for pagination. It is an integer used to skip records at the
+start of the returned matching set, e.g.
+
+    ?__skip=100
+
+* <b>\_\_limit</b>  is used for pagination. It is an integer that is used to limit the size
+of the returned record set, e.g.
+
+    ?__limit=25
+
+Pagination control is achieved by combining skip and limit parameters:
+
+Return the first page of 25 records:
+
+    ?__skip=0&&__limit=25
+
+Return the second page of 25 records
+
+    ?__skip=25&__limit=25
+
+* <b>\_\_select</b> is a list of field names seperated by commas. These are the fields that
 will be populated into the returned records. An empty select parameter
 will cause an array of empty objects (only the id field will be present) to be
-returned.
-    e.g. ?__select=field1,field2
+returned, e.g.
+
+    ?__select=field1,field2
 
 __NOTE:__ The default for select is set to return no data, the client side must ask
 for the required fields. This is used to protect the data that is not specified
 in the Attribute Set from being viewed.
 
 * <b>...</b> a list of field names and regular expressions as parameters.
-The named fields are matched against the reqular expression.
-    e.g ?field1=foo&field2=^604
+The named fields are matched against the reqular expression, e.g.
+
+    ?field1=foo&field2=^604
 
 ### Response Header support for server side tabulation control
 
