@@ -311,3 +311,6 @@ the top controller of the Attribute Viewer only handles the primary record. An a
 should be attached to every adornment and a User datatype controller to every user defined datatype.
 This will create a structure that can easily handle arbritarily complex relationships in the data being
 viewed.
+
+12. The query parameter __\_\_select__ is set for primary record queries, but it is not set for adornment
+record queries. This should be fixed when __11__ is fixed.
