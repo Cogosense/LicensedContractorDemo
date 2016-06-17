@@ -115,8 +115,14 @@ exports.show = function(req, res, next) {
                 if(err) {
                     return next(err);
                 } else {
-                    console.log(JSON.stringify(result, null, 2));
-                    res.status(200).json(result);
+                    AttributeSet.populate(attributeSet, 'adornments.attributes.typeRef', function(err, result){
+                        if(err) {
+                            return next(err);
+                        } else {
+                            console.log(JSON.stringify(result, null, 2));
+                            res.status(200).json(result);
+                        }
+                    });
                 }
             });
         }
