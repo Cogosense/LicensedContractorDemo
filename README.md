@@ -126,7 +126,7 @@ __Note__: Because the attribute viewer is limited to text only fields at the mom
 adornment is non functional because it is implemented as an array of the User defined type __Note__.
 
 There is no preset concept of a primary attribute set or an adornment attribute set. Given
-an attribute set A and B, B can be an adornment of and simultaneously A can be an adornment
+an attribute set A and B, B can be an adornment of A and simultaneously A can be an adornment
 of B. The only restriction is an attribute set cannot be used as an adornment of itself.
 
 ### Data source services
