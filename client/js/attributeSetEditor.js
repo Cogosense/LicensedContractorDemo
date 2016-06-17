@@ -12,6 +12,7 @@ function(app, Templates) {
         'date',
         'enum',
         'key',
+        'multiline',
         'text'
     ];
 
