@@ -298,11 +298,10 @@ given to this if a publisher wishes to restrict access to a subset of other publ
 case API tokens may need to be provisioned in the publisher record keyed by __Attribute Set__ owner id.
 
 7. In the attribute editor when defining a User defined type, the API endpoint is not needed, so it is
-left blank.  It may be better to have an initial select for the record type:
+left blank.  It may be better to have an initial select for the record type then the API endpoint can
+be hidden (along with other things like the adornments list).
     * Attribute Set (requires end point)
     * Simple Collection (does not require end point)
-
-Then the API endpoint can be hidden (along with other things like the adornments list).
 
 8. An attribute set name cannot be changed - the record has to be deleted and recreated with the new
 name.
