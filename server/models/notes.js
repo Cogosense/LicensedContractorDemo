@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Note = new mongoose.Schema({
     AuthorOrganization  : String,
     AuthorName          : String,
-    NoteDate            : String,
+    NoteDate            : { type: Date, default: Date.now },
     NoteText            : String
 });
 
