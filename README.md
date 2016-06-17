@@ -45,7 +45,7 @@ and optionally to continue development the following tools are extremely useful:
 
 ## Design
 
-The design users 4 concepts:
+The design uses 4 concepts:
 
 1. The publisher
 2. The attribute Set
@@ -63,7 +63,7 @@ authentication system.
 Prior to creating attributes, a Publisher must be selected so that the AttributeSet Owner can
 be established.
 
-## Attribute set
+### Attribute set
 
 An attribute set contains the following:
 
@@ -75,7 +75,7 @@ An Attribute Set can also be used to define a Collection (Object) for use as a s
 data type. In this case the URL should be left blank as the data source will be the same
 as the containing Atrribute Set or Adornment.
 
-## The Attribute Viewer
+### The Attribute Viewer
 
 The viewer has no understanding of the data it is presenting built into its logic. The only
 concepts it understands are primary records, adornment records, built in data types, User
@@ -99,7 +99,7 @@ are updated when the details view is dismissed. If the primary record is modifia
 been modified, the summary view controller will be instructed to write back the row to the data
 source on dismissing of the details view.
 
-## Data Source
+### Data Source
 
 The data source must be a standard CRUD RESTful API (i.e. Create, Retrieve Update Delete), the endpoint
 should conform to the form "/resource/:id". For the demo purposes all data sources are served
@@ -129,7 +129,7 @@ There is no preset concept of a primary attribute set or an adornment attribute 
 an attribute set A and B, B can be an adornment of A and simultaneously A can be an adornment
 of B. The only restriction is an attribute set cannot be used as an adornment of itself.
 
-### Data source services
+#### Data source services
 
 Data sources must meet a set of minimum requirements to be suitable for use in this demo.
 The source must RESTful (i.e. has no state and uses resource based URLs). The data source must
@@ -144,7 +144,7 @@ support CRUD operations and the Query operation. The mapping of HTTP method to o
 Optionally the Query operation must also support server side paging, sorting, filtering and
 selecting for large data sets.
 
-### Query parameter support for server side tabulation control
+#### Query parameter support for server side tabulation control
 
 Assuming that the AngularJS ui-grid or Backbone and BackGrid model is used for data presentation,
 then both client side and server side controls for sorting, filtering selection and pagination
@@ -200,7 +200,7 @@ The named fields are matched against the reqular expression, e.g.
 
     ?field1=foo&field2=^604
 
-### Response Header support for server side tabulation control
+#### Response Header support for server side tabulation control
 
 When using server side tabulation, the total number of records has to be returned with
 each Query response. This is done using the custom header __X-total-count__. To support
