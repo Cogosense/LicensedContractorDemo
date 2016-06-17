@@ -1,0 +1,22 @@
+.modal-header
+    h3.modal-title #{ownerId.publisherName} - #{recordName}
+.modal-body
+    .well
+        form(name='primary')
+            each attr in attributes
+                .form-group
+                    label(for=attr.name) #{attr.label}
+                    input.form-control(id=attr.name ng-model="data.#{attr.name}" readonly=readOnly)
+    each adornment in adornments
+        legend #{adornment.ownerId.publisherName} - #{adornment.recordName}
+        .well
+            form(name="adornment_#{adornment._id}")
+                each attr in adornment.attributes
+                    if attr.type != 'key'
+                        .form-group
+                            label(for=attr.name) #{attr.label}
+                            input.form-control(id=attr.name ng-model="adornments['#{adornment._id}'].#{attr.name}" readonly=adornment.readOnly)
+
+.modal-footer
+    button.btn.btn-primary(type="button" ng-click="ok()") OK
+    button.btn.btn-warning(type="button" ng-click="cancel()") Cancel

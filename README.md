@@ -64,11 +64,15 @@ be established.
 
 ## Attribute set
 
-AN attribute set contains the following:
+An attribute set contains the following:
 
 1. A URL endpoint to the data source this attribute set describes.
 2. A list of attributes and how they should be presented
 3. A list of adornment records, which are themselves __Attribute Sets__
+
+An Attribute Set can also be used to define a Collection (Object) for use as a structured
+data type. In this case the URL should be left blank as the data source will be the same
+as the containing Atrribute Set or Adornment.
 
 ## Data Source
 
@@ -85,17 +89,91 @@ __XDomain__ can be found at https://github.com/jpillora/xdomain
 
 The licensed contractor demo supports to preconfigured internal data sources:
 
-    /contractor/:id
+    /datasource/contractor/:id
 
 and
 
-    /surrey/:id
+    /datasource/surrey/:id
 
 These represent the BCSA licensed contractor data and the City of Surrey annotations.
 
-There is no preset concept of a primary attribute set or an adornment attribute set. Given an attribute
-set A and B, B can be an adornment of and simultaneously A can be an adornment of B. The only restriction
-is an attribute set cannot be used as an adornment of itself.
+There is no preset concept of a primary attribute set or an adornment attribute set. Given
+an attribute set A and B, B can be an adornment of and simultaneously A can be an adornment
+of B. The only restriction is an attribute set cannot be used as an adornment of itself.
+
+### Data source services
+
+Data sources must meet a set of minimum requirements to be suitable for use in this demo.
+The source must RESTful (i.e. has no state and uses resource based URLs). The data source must
+support CRUD operations and the Query operation. The mapping of HTTP method to operation is:
+
+* Use POST for Create
+* Use GET for Read (single)
+* Use PUT for Update
+* Use DELETE for Delete
+* Use GET for Query (list)
+
+Optionally the Query operation must also support server side paging, sorting, filtering and
+selecting for large data sets.
+
+### Query parameter support for server side tabulation control
+
+Assuming that the AngularJS ui-grid or Backbone and BackGrid model is used for data presentation,
+then both client side and server side controls for sorting, filtering selection and pagination
+exist. The client side controls are good for record sets upto about 5,000 maximum. At this
+size the retrieval of the initial dataset becomes noticable (~5-10 secs).
+
+Client side controls are trivial to setup,
+
+This demo focuses on the techniques required to support server side tabular control in
+AngularJS ui-grid, using an Express/Mongoose/MongoDB back end.
+
+For other services to support server side control, the REST API Query operation must support
+the following query parameters.
+
+* <b>__sort</b>   is a list of field names seperated by commas. The highest priority isort
+first is first. A descending sort is used if the first character in the field name is '-'.
+    e.g. ?__sort='field1,-field2'
+* <b>__skip</b>   is used for pagination. It is an integer used to skip records at the
+start of the returned matching set.
+    e.g. ?__skip=100
+* <b>__limit</b>  is used for pagination. It is an integer that is used to limit the size
+of the returned record set.
+    e.g. ?__limit=25
+
+    A query of __skip=0&__limit=25 returns the first page of 25 records
+    A query of __skip=25__limit=25 returns the second page of 25 records
+    etc.
+
+* <b>__select</b> is a list of field names seperated by commas. These are the fields that
+will be populated into the returned records. An empty select parameter
+will cause an array of empty objects (only the id field will be present) to be
+returned.
+    e.g. ?__select=field1,field2
+
+__NOTE:__ The default for select is set to return no data, the client side must ask
+for the required fields. This is used to protect the data that is not specified
+in the Attribute Set from being viewed.
+
+* <b>...</b> a list of field names and regular expressions as parameters.
+The named fields are matched against the reqular expression.
+    e.g ?field1=foo&field2=^604
+
+### Response Header support for server side tabulation control
+
+When using server side tabulation, the total number of records has to be returned with
+each Query response. This is done using the custom header __X-total-count__. To support
+CORS, the header __Access-Control-Expose-Headers__ set to the value _X-total-count_ must
+also be returned.
+
+The actual number returned is a matter of preference, but it can be one of two things:
+
+1. THe total number of records in the data source source collection.
+2. The total number of records that would be returned taking into account the
+   filtering parameter and ignoring the skip and limit parameters.
+
+The demo uses the second number as this provides immediate feedback to the operator on
+how many records are matching their search criteria.
 
 ## Permissions
 
@@ -106,6 +184,40 @@ The following permission model is used:
 the owning publisher has marked as restricted.
 3. A publisher may attach their attribute sets to any other attribute set as an adornment.
 4. A publisher may view all adornments to an attribute set.
+
+## Constraints, Limitations and Known Defects
+
+1. No mechanism exists to create new primary Attribute Set records. To achieve this add a "Create New"
+button in the viewerSummary view that launches an empty viewerDetailsModal view.
+
+2, Adornment data records for a Primary record with name __Foo__ must have a an attribute __Foo_id__ 
+This is the key defined in the Attribute Set and is used to query and update Adornments. This
+constraint can be relaxed by adding a field to specify the key name rather than using a convention
+in the code to create one.
+
+3. The current mechanism for linking primary and adornment records relies on the MongoDB id field.
+Similar to constraint 2 above, an addition to the Attribute Editor could made to allow the unique
+key field to be picked from the existing primary record's list of attributes.
+
+4. Summary fields in adornment records are not displayed in the summary viewer table. This is
+because to do this would require that the adorment records are retrieved in the summary controller.
+Currently they are only retrieved in the details controller. The constraint could be lifted if
+all adornments on the page are queried in the summary controller (the number of queries  would be
+1 + number of entries per page * number of adorments per primary record). The number of queries
+could be limited by checking the adornment attribute lists for summary attributes before making
+the adornment queries.
+
+5. There is a bug in that if two publishers publish a primary record with the same name, an
+adornment record cannot be an adornment to both these records. This is because the linking
+id must have the attribute name __<PrimaryRecordName>_id__. This defect can be fixed by either
+using a generated name or __<publisherName>_<PrimaryRecordName>_id__.
+
+6. In practice, an adornment record may also be a primary record, or an adornment record to multiple
+primaries. As a primary record it would be queried by the primary record ID, as an adornment record
+it would be queried by the ID of primary record the adornment is attached to. The controller needs
+to be able to work out which ID is being passed in. This is currently solved by adding
+a query parameter of __\_\_key=<PrimaryRecordName>_id__ to the GET resource URL. This allows the REST
+api contoller to make a decision on which key to use.
 
 ## TODO
 
@@ -139,3 +251,9 @@ Then the API endpoint can be hidden (onlong with the adornments)
 
 8. An attribute set name cannot be changed - the record has to be deleted and recreated with the new
 name.
+
+9. The Attribute Editor only correctly handles types of "text" and "key". Support for the other types
+has not been coded yet.
+
+10. The description field in each attribute is currently not used. The plan is to use it as a tooltip
+for each field.

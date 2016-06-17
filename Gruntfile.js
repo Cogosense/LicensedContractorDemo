@@ -34,7 +34,7 @@ module.exports = function (grunt) {
                 tasks: ['copy:jade']
             },
             bootstrap: {
-                files: ['node_modules/bootstrap/dist/css/bootstrap.min.css}'],
+                files: ['node_modules/bootstrap/dist/css/bootstrap.min.css', 'node_modules/bootstrap/dist/fonts/*'],
                 tasks: ['copy:bootstrap']
             },
             app: {
@@ -154,7 +154,7 @@ module.exports = function (grunt) {
             },
             bootstrap: {
                 files: [
-                    { expand: true, cwd: 'node_modules/bootstrap/dist/css', src: 'bootstrap.min.css', dest: 'public/lib/bootstrap/dist/css/' }
+                    { expand: true, cwd: 'node_modules/bootstrap/dist/', src: ['fonts/**', 'css/**'], dest: 'public/lib/bootstrap/dist/' }
                 ]
             }
         },

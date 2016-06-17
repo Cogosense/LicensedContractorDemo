@@ -2,13 +2,13 @@
 //
 // Steve Williams
 
-var debug = require('debug')('lc:contractor');
+var debug = require('debug')('lc:burnaby');
 
 // Data model
 var mongoose = require('mongoose');
 
 // Get the model schema used by this controller
-var Contractor = mongoose.model('Contractor');
+var Permit = mongoose.model('BurnabyPermit');
 
 // =======================================
 // Specify view engine for this controller
@@ -38,14 +38,14 @@ exports.before = function(req, res, next) {
 // create a new resource
 // =======================================
 exports.create = function(req, res, next) {
-    debug('creating contractor');
-    var newContractor = new Contractor(req.body);
-    newContractor.save(function(err, contractor) {
+    debug('creating permit');
+    var newPermit = new Permit(req.body);
+    newPermit.save(function(err, permit) {
         if(err) {
             return next(err);
         }
-        debug('created contractor: ' + JSON.stringify(contractor));
-        res.status(200).json(contractor);
+        debug('created permit: ' + JSON.stringify(permit));
+        res.status(200).json(permit);
     });
 };
 
@@ -53,7 +53,7 @@ exports.create = function(req, res, next) {
 // list all resources
 // =======================================
 exports.list = function(req, res, next) {
-    debug('listing all contractors with filer: ' + JSON.stringify(req.query));
+    debug('listing all permits with filter: ' + JSON.stringify(req.query));
 
     /*
      * Sorting, filtering, pagination and selection are supported using query parameters
@@ -139,7 +139,7 @@ exports.list = function(req, res, next) {
     console.log('paginate skip: ' + skip + ' limit: ' + limit);
     console.log('select: ' + JSON.stringify(select));
 
-    Contractor
+    Permit
     .find(filter)
     .sort(sort)
     .select(select)
@@ -154,7 +154,7 @@ exports.list = function(req, res, next) {
         }
         debug("count: " + count + " skip: " + skip + " limit: " + limit + " p length = " + p.length);
         res.header({
-            'Access-Control-Expose-Headers': 'X-total-count',
+            'Access-Control-Expose-Headecontractorsrs': 'X-total-count',
             'X-total-count': count
         });
         res.status(200).json(p);
@@ -165,16 +165,16 @@ exports.list = function(req, res, next) {
 // update the specified resource
 // =======================================
 exports.update = function(req, res, next) {
-    debug('updating contractor');
-    Contractor.findById(req.params.contractor_id, function(err, contractor) {
+    debug('updating permit');
+    Permit.findById(req.params.burnaby_id, function(err, permit) {
         // handle any errors
         if(err) {
             return next(err);
         }
-        if(!contractor) {
+        if(!permit) {
             res.status(404).send("Not Found");
         } else {
-            contractor.update(req.body, function(err, contractor){
+            permit.update(req.body, function(err, permit){
                 if(err) {
                     return next(err);
                 }
@@ -188,16 +188,16 @@ exports.update = function(req, res, next) {
 // delete the specified resource
 // =======================================
 exports.remove = function(req, res, next) {
-    debug('deleting contractor');
-    Contractor.findById(req.params.contractor_id, function(err, contractor) {
+    debug('deleting permit');
+    Permit.findById(req.params.burnaby_id, function(err, permit) {
         // handle any errors
         if(err) {
             return next(err);
         }
-        if(!contractor) {
+        if(!permit) {
             res.status(404).send("Not Found");
         } else {
-            contractor.remove(function(){
+            permit.remove(function(){
                 res.status(204).send("No Content");
             });
         }
@@ -214,17 +214,17 @@ exports.show = function(req, res, next) {
         key = req.query.__key;
     }
     var criteria = {};
-    criteria[key] = req.params.contractor_id;
+    criteria[key] = req.params.burnaby_id;
 
-    Contractor.findOne(criteria, function(err, contractor) {
+    Permit.findOne(criteria, function(err, permit) {
         // handle any errors
         if(err) {
             return next(err);
         }
-        if(!contractor) {
+        if(!permit) {
             res.status(404).send("Not Found");
         } else {
-            res.status(200).send(contractor);
+            res.status(200).send(permit);
         }
     });
 };

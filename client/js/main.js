@@ -4,6 +4,9 @@ requirejs.config({
         angular : {
             exports: 'angular'
         },
+        'angularUiGrid' : {
+            deps: ['angular']
+        },
         'angularAnimate' : {
             deps: ['angular']
         },
@@ -24,6 +27,7 @@ requirejs.config({
          * bower modules
          */
         angular: '../lib/angular/angular',
+        'angularUiGrid': '../lib/angular-ui-grid/ui-grid.min',
         'angularResource': '../lib/angular-resource/angular-resource.min',
         'angularAnimate': '../lib/angular-animate/angular-animate.min',
         'angularBootstrap': '../lib/angular-bootstrap/ui-bootstrap-tpls.min',
@@ -39,9 +43,11 @@ requirejs.config({
  */
 require([
     'app',
+    'popup',
     'publisher',
-    'attributeSet',
-    'licensedContractor'
+    'attributeSetEditor',
+    'viewerSummary',
+    'viewerDetailsModal'
 ], function() {
     angular.bootstrap(document, ['LicensedContractorApp']);
 });

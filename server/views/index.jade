@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    h1 BCSA Licensed Contractor Extensible API Demonstration
+    h1 BCSA Extensible API Demonstration
     .well
         b {{ currentPublisher.publisherName }}
         span  is the selected publisher
@@ -24,7 +24,7 @@ block content
                             option(value='' disabled hidden selected='selected') Please Set the Publisher
 
         uib-tab(index="1" heading="Attribute Editor")
-            div(ng-controller="attributeSetController")
+            div(ng-controller="attributeSetEditorController")
                 form.well
                     legend New Record Attribute Set
                     .form-group
@@ -62,7 +62,6 @@ block content
                                     .all-adornments(ng-repeat="adornmentId in currentAttributeSet.adornments")
                                         p(ng-init="adornment = (attributeSetList | filter:{_id: adornmentId})[0]") {{adornment.recordName}} ({{$root.publisherLookup[adornment.ownerId].publisherName}})
 
-        uib-tab(index="2" heading="Licensed Contractor")
-            div(ng-controller="licensedContractorController")
-
-        uib-tab(index="4" heading="Add Secondary Data")
+        uib-tab(index="2" heading="Summary Viewer")
+            div(ng-controller="viewerSummaryController")
+                .primaryGrid#primaryGrid1(ui-grid="gridOptions" ui-grid-pagination)

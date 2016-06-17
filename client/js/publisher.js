@@ -9,9 +9,7 @@ function(app) {
         this.publisherName = name;
     }
 
-    var publisherServices = angular.module('publisherServices', ['ngResource']);
-
-    publisherServices.factory('PublisherService', ['$resource', function($resource) {
+    app.factory('PublisherService', ['$resource', function($resource) {
         return $resource('/publisher/:id');
     }]);
 
@@ -54,7 +52,7 @@ function(app) {
         };
         $scope.changePublisher = function(){
             console.log("changePublisher() called");
-            $rootScope.$broadcast('changePublisher');
+            $rootScope.$broadcast('changePublisher', $rootScope.currentPublisher._id);
         };
     }]);
 });

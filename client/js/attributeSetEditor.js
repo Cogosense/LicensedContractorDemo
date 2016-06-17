@@ -1,7 +1,7 @@
 define([
     'app',
-    'templates/attribute',
-    'templates/adornment'
+    'templates/attributeEditor',
+    'templates/adornmentEditor'
 ],
 function(app, Templates) {
     'use strict';
@@ -11,6 +11,7 @@ function(app, Templates) {
         '-- Built-in types',
         'date',
         'enum',
+        'key',
         'text'
     ];
 
@@ -31,9 +32,7 @@ function(app, Templates) {
         this.searchable = false;
     }
 
-    var attributeSetServices = angular.module('attributeSetServices', ['ngResource']);
-
-    attributeSetServices.factory('AttributeSetService', ['$resource', function($resource) {
+    app.factory('AttributeSetService', ['$resource', function($resource) {
         return $resource('/attributeSet/:id', { id: '@_id'}, {
             update: {
                 method: 'PUT'
@@ -41,7 +40,7 @@ function(app, Templates) {
         });
     }]);
 
-    app.controller('attributeSetController', ['$scope', '$rootScope', 'AttributeSetService', function($scope, $rootScope, AttributeSetService){
+    app.controller('attributeSetEditorController', ['$scope', '$rootScope', '$filter', 'popup', 'AttributeSetService', function($scope, $rootScope, $filter, popup, AttributeSetService){
         console.log("activated the attribute set controller");
         $scope.dataTypes = angular.copy(datatypes);
         $scope.attributeSetList = AttributeSetService.query();
@@ -153,12 +152,48 @@ function(app, Templates) {
 
         $scope.changeAdornment = function(adornmentId){
             console.log("changeAdornment() adornment " + adornmentId);
+            var keyFound = false;
+            var keyTypeCorrect = false;
             if($scope.currentSelectedAdornments[adornmentId]) {
+                var adornment = $filter('filter')($scope.currentPublisherRecordList, {_id: adornmentId})[0];
+                var attrLen = adornment.attributes ? adornment.attributes.length : 0;
+                for(var i = 0 ; i < attrLen; ++i){
+                    var attr = adornment.attributes[i];
+                    if(attr.name === $scope.currentAttributeSet.recordName + '_id'){
+                        keyFound = true;
+                        if(attr.type === 'key'){
+                            keyTypeCorrect = true;
+                        }
+                        break;
+                    }
+                }
+                if(!keyFound){
+                    popup.err('Missing Association key',
+                              'The key ' +
+                                  $scope.currentAttributeSet.recordName +
+                                  '_id must be defined in the record ' +
+                                  adornment.recordName +
+                                  '.'
+                             );
+                    delete $scope.currentSelectedAdornments[adornmentId];
+                    return;
+                }
+                if(!keyTypeCorrect){
+                    popup.err('Incorrect Type for Association Key',
+                              'The attribute ' +
+                                  $scope.currentAttributeSet.recordName +
+                                  '_id in the record ' +
+                                  adornment.recordName +
+                                  ' must have the type <b>key</b>.'
+                             );
+                    delete $scope.currentSelectedAdornments[adornmentId];
+                    return;
+                }
                 $scope.currentAttributeSet.adornments.push(adornmentId);
             } else {
-                for(var i = 0; i < $scope.currentAttributeSet.adornments.length; ++i) {
-                    if($scope.currentAttributeSet.adornments[i] === adornmentId) {
-                        $scope.currentAttributeSet.adornments.splice(i, 1);
+                for(var j = 0; j < $scope.currentAttributeSet.adornments.length; ++j) {
+                    if($scope.currentAttributeSet.adornments[j] === adornmentId) {
+                        $scope.currentAttributeSet.adornments.splice(j, 1);
                     }
                 }
             }
@@ -169,7 +204,7 @@ function(app, Templates) {
         console.log('modelAttribute called');
         return {
             restrict: 'A',
-            template: Templates.attribute()
+            template: Templates.attributeEditor()
         };
     }]);
 
@@ -177,7 +212,7 @@ function(app, Templates) {
         console.log('modelAdornment called');
         return {
             restrict: 'A',
-            template: Templates.adornment()
+            template: Templates.adornmentEditor()
         };
     }]);
 });

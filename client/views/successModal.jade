@@ -1,0 +1,11 @@
+.modal-header.bg-success
+    button.close(type="button" ng-click="cancel()" aria-label="Close")
+        span(aria-hidden="true") &times;
+    h4.modal-title
+        span.glyphicon.glyphicon-ok-sign
+        span  #{title}
+.modal-body
+    .well
+        p !{message}
+.modal-footer
+    button.btn.btn-success(type="button" ng-click="cancel()") Close

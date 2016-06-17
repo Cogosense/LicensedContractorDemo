@@ -107,8 +107,8 @@ exports.remove = function(req, res, next) {
 // query the specified resource
 // usually display resource details
 // =======================================
-// exports.show = function(req, res, next) {
-//}
+exports.show = function(req, res, next) {
+}
 
 // =======================================
 // edit the specified resource
