@@ -66,12 +66,12 @@ exports.before = function(req, res, next) {
 exports.show = function(req, res, next) {
     debug('owner: ' + req.params.publisher_id);
     debug('publisher: ' + req.query.publisher_id);
-    debug('querying API metadata: ' + req.params.api_id);
+    debug('querying API metadata: ' + req.params.attributes_id);
 
     var owner = req.params.publisher_id;
     var publisher = req.query.publisher_id;
 
-    AttributeSet.findOne({recordName: req.params.api_id, ownerId: req.params.publisher_id})
+    AttributeSet.findOne({recordName: req.params.attributes_id, ownerId: req.params.publisher_id})
         .populate('ownerId attributes.typeRef adornments adornments.ownerId')
         .exec(function(err, attributeSet) {
         // handle any errors
@@ -92,7 +92,8 @@ exports.show = function(req, res, next) {
                     }
                 }
                 attributeSet.attributes = filteredAttrs;
-                attributeSet.readOnly = true;
+                if(!attributeSet.worldWritable)
+                    attributeSet.readOnly = true;
             }
             for(var j = 0; j < attributeSet.adornments.length; ++j) {
                 var adornment = attributeSet.adornments[j];
@@ -106,7 +107,8 @@ exports.show = function(req, res, next) {
                         }
                     }
                     adornment.attributes = filteredAdornmentAttrs;
-                    adornment.readOnly = true;
+                    if(!adornment.worldWritable)
+                        adornment.readOnly = true;
                 }
             }
             Publisher.populate(attributeSet, 'adornments.ownerId', function(err, result){

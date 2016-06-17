@@ -45,6 +45,10 @@ block content
                         .form-group(ng-show="currentAttributeSet.ownerId == $root.currentPublisher._id")
                             label(for="attribute-set-endpoint") API Endpoint Specification for Data Source
                             input.form-control#attribute-set-endpoint(ng-model="currentAttributeSet.endPoint" placeholder="API Endpoint specification for the data source e.g. /contractor/:id")
+                        .form-group(ng-show="currentAttributeSet.ownerId == $root.currentPublisher._id")
+                            label
+                                input(type="checkbox" ng-model="currentAttributeSet.worldWritable")
+                                |  Allow all publishers to contribute to this record
                         .form-group
                             .attributes(ng-repeat="attribute in currentAttributeSet.attributes" model-attribute="attribute")
 

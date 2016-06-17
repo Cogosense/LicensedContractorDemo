@@ -19,6 +19,7 @@ var attributeSetSchema = mongoose.Schema({
     recordName      : String,
     ownerId         : {type: mongoose.Schema.Types.ObjectId, ref: 'Publisher', required: true},
     endPoint        : String,
+    worldWritable   : Boolean,
     attributes      : [Attributes],
     adornments      : [{type: mongoose.Schema.Types.ObjectId, ref: 'AttributeSet'}]
 });

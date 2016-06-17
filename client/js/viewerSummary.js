@@ -7,10 +7,10 @@ function(app, Templates) {
     console.log("loaded the viewer summary controller");
 
     app.factory('ApiAttributeService', ['$resource', function($resource) {
-        return $resource('/publisher/:owner_id/api/:name');
+        return $resource('/publisher/:owner_id/attributes/:name');
     }]);
 
-    var apiMetaData = null;
+    var attributesMetaData = null;
 
     app.controller('viewerSummaryController', [
         '$scope',
@@ -111,14 +111,14 @@ function(app, Templates) {
                 console.log("detailsGridRow() click event received for row: " + JSON.stringify(row.entity));
                 var modalInstance = $uibModal.open({
                     animation: true,
-                    template: Templates.attributeSetViewer(apiMetaData),
+                    template: Templates.attributeSetViewer(attributesMetaData),
                     controller: 'viewerDetailsModalController',
                     resolve: {
                         data: function(){
                             return row.entity;
                         },
                         metadata: function(){
-                            return apiMetaData;
+                            return attributesMetaData;
                         }
                     }
                 });
@@ -126,7 +126,7 @@ function(app, Templates) {
                 modalInstance.result.then(function(result){
                     console.log('viewerDetailsModal result: ' + JSON.stringify(result));
                     if(result.save){
-                        var recName = apiMetaData.ownerId.publisherName + ' ' + apiMetaData.recordName;
+                        var recName = attributesMetaData.ownerId.publisherName + ' ' + attributesMetaData.recordName;
                         Primary.update(row.entity, function success(data){
                             $log.info(recName + ' update success');
                         }, function failure(response){
@@ -141,10 +141,10 @@ function(app, Templates) {
 
             $scope.$on('changePublisher', function(event, publisher_id) {
                 console.log("changePublisher() event received");
-                apiMetaData = ApiAttributeService.get({publisher_id: publisher_id, owner_id: '575762eeb84836f47d31a57f', name: 'Bingo'}, function(data){
-                    if(apiMetaData.endPoint){
+                attributesMetaData = ApiAttributeService.get({publisher_id: publisher_id, owner_id: '575762eeb84836f47d31a57f', name: 'Bingo'}, function(data){
+                    if(attributesMetaData.endPoint){
                         Primary = $injector.instantiate(['$resource', function($resource){
-                            return $resource(apiMetaData.endPoint, {id: '@_id'}, {
+                            return $resource(attributesMetaData.endPoint, {id: '@_id'}, {
                                 update: {
                                     method: 'PUT'
                                 }
@@ -152,8 +152,8 @@ function(app, Templates) {
                         }]);
                         paginationOptions.select = [];
                         $scope.gridOptions.columnDefs = [];
-                        for(var i = 0; i < apiMetaData.attributes.length; ++i) {
-                            var attr = apiMetaData.attributes[i];
+                        for(var i = 0; i < attributesMetaData.attributes.length; ++i) {
+                            var attr = attributesMetaData.attributes[i];
                             if(attr.summary){
                                 $scope.gridOptions.columnDefs.push({
                                     enableHiding: false,
