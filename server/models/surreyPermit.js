@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 // define the schema for the record schemas
 var surreyPermitSchema = mongoose.Schema({
-    Bingo_id          : String,
+    Bingo_id          : {type: String, unique: true},
     permitNumber      : String,
     inspectionResult  : String,
     inspectionNotes   : String
