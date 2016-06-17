@@ -260,7 +260,7 @@ the adornment queries.
 5. There is a bug in that if two publishers publish a primary record with the same name, an
 adornment record cannot be an adornment to both these records. This is because the linking
 id must have the attribute name __&lt;PrimaryRecordName&gt;_id__. This defect can be fixed by either
-using a generated name or __&lt;publisherName&gt;_&lt;PrimaryRecordName&gt;_id__.
+using a generated name or __&lt;publisherName&gt;\_&lt;PrimaryRecordName&gt;\_id__.
 
 6. In practice, an adornment record may also be a primary record, or an adornment record to multiple
 primaries. As a primary record it would be queried by the primary record ID, as an adornment record
@@ -289,8 +289,8 @@ input field.)
 to __"@_id"__, This is mongodb specific and really should be a attribute of the data being
 described.
 
-5. Deleting a __Publisher__ does not cleanup any AttributeSers owned by the Publisher. They are 
-eft dangling with no owner.
+5. Deleting a __Publisher__ does not cleanup any AttributeSets owned by the Publisher. They are 
+eft dangling with no owner. (In fact deleting records in general has not been rigorously exercised).
 
 6. A data source may require authentication to access its endpoint. Currently there is no mechanism to
 specify the auth tokens. This could be down directly in the attribute set. Special thought may have to
@@ -299,10 +299,10 @@ case API tokens may need to be provisioned in the publisher record keyed by __At
 
 7. In the attribute editor when defining a User defined type, the API endpoint is not needed, so it is
 left blank.  It may be better to have an initial select for the record type:
-    * Primary Attribute Set
-    * Adornment Attribute Set
-    * Simple Collection
-Then the API endpoint can be hidden (along with the adornments list)
+    * Attribute Set (requires end point)
+    * Simple Collection (does not require end point)
+
+Then the API endpoint can be hidden (along with other things like the adornments list).
 
 8. An attribute set name cannot be changed - the record has to be deleted and recreated with the new
 name.
@@ -322,4 +322,5 @@ This will create a structure that can easily handle arbritarily complex relation
 viewed.
 
 12. The query parameter __\_\_select__ is set for primary record queries, but it is not set for adornment
-record queries. This should be fixed when __11__ is fixed.
+record queries. This should be fixed when __11__ is fixed. This will also require support in the server side
+data source controllers.
