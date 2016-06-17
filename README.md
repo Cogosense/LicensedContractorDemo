@@ -209,7 +209,7 @@ also be returned.
 
 The actual number returned is a matter of preference, but it can be one of two things:
 
-1. THe total number of records in the data source source collection.
+1. The total number of records in the data source collection.
 2. The total number of records that would be returned taking into account the
    filtering parameter and ignoring the skip and limit parameters.
 
@@ -218,13 +218,21 @@ how many records are matching their search criteria.
 
 ## Permissions
 
-The following permission model is used:
+The following permission model is used for attributes:
 
-1. A publisher can edit all their owned attribute sets.
+1. A publisher can edit their own attribute sets.
 2. Other publishes can read the label and description of all attribute sets, except the attributes
 the owning publisher has marked as restricted.
 3. A publisher may attach their attribute sets to any other attribute set as an adornment.
 4. A publisher may view all adornments to an attribute set.
+
+The following permission model is used for data sources:
+
+1. A publisher may edit their own data from either primary or adornment data sources.
+2. A publisher may restrict specific data attributes from being viewed by other publishers
+3. Other publishers may view all primary and adornment data sets, unless viewing has been
+restricted by the publisher.
+4. A publisher may opt to make a data set writable by all other publishers.
 
 ## Constraints, Limitations and Known Defects
 
