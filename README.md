@@ -45,11 +45,12 @@ and optionally to continue development the following tools are extremely useful:
 
 ## Design
 
-The design users 3 concepts:
+The design users 4 concepts:
 
 1. The publisher
 2. The attribute Set
-3. The data source
+3. The attribute viewer
+4. The data source
 
 ### Publisher
 
@@ -74,9 +75,33 @@ An Attribute Set can also be used to define a Collection (Object) for use as a s
 data type. In this case the URL should be left blank as the data source will be the same
 as the containing Atrribute Set or Adornment.
 
+## The Attribute Viewer
+
+The viewer has no understanding of the data it is presenting built into its logic. The only
+concepts it understands are primary records, adornment records, built in data types, User
+defined datatypes and data sources. An Attribute set is selected and retrieved from the
+attribute server. The server fully expands the attribute set as JSON and returns it to the
+attribute viewer. The permissions (read/write) are set by the server and honoured by the
+viewer,
+
+The viewer has two modes:
+
+1. Summary mode is an AngularJS ui-grid. The attributes in the primary record marked as
+summary attributes are added to the table as columns. The primary data source is dynamically
+created and data is pulled one page at a time to populate the rows. Each row has a details
+button.
+
+2. Details mode is a form dynamically created from the attributes. Including all promary record
+fields and all adornment fields. The adornment data sources are dynamically created at this
+time and the data for the row is pulled and displayed. Based on the permissions specified by
+the server, each record set is either read/write or read only. Any modifiable adorment recordss
+are updated when the details view is dismissed. If the primary record is modifiable, and it has
+been modified, the summary view controller will be instructed to write back the row to the data
+source on dismissing of the details view.
+
 ## Data Source
 
-The data source must be a standard CRUD RESTful API (i.e. CReate Update Delete), the endpoint
+The data source must be a standard CRUD RESTful API (i.e. Create, Retrieve Update Delete), the endpoint
 should conform to the form "/resource/:id". For the demo purposes all data sources are served
 from the same server. Each data source is a seperate controller, using a dedicated Mongoose
 Model and MongoDB table.
@@ -90,12 +115,15 @@ __XDomain__ can be found at https://github.com/jpillora/xdomain
 The licensed contractor demo supports to preconfigured internal data sources:
 
     /datasource/contractor/:id
-
-and
-
     /datasource/surrey/:id
+    /datasource/burnaby/:id
+    /datasource/notes/:id
 
-These represent the BCSA licensed contractor data and the City of Surrey annotations.
+These represent the BCSA licensed contractor data and the City of Surrey, City of Burnaby and Notes
+annotations.
+
+__Note__: Because the attribute viewer is limited to text only fields at the moment, the __Notes__
+adornment is non functional because it is implemented as an array of the User defined type __Note__.
 
 There is no preset concept of a primary attribute set or an adornment attribute set. Given
 an attribute set A and B, B can be an adornment of and simultaneously A can be an adornment
@@ -219,6 +247,11 @@ to be able to work out which ID is being passed in. This is currently solved by 
 a query parameter of __\_\_key=<PrimaryRecordName>_id__ to the GET resource URL. This allows the REST
 api contoller to make a decision on which key to use.
 
+7. Users types are constrained to a single depth currently. In the controller
+_server/controllers/publisher/attributes/index.js_ only __attributes.typeRef__ and
+__adornments.attributes.typeRef__ are populated (aka expanded). The typeRefs should
+be expanded iteratively allowing any arbitrary depth of User types.
+
 ## TODO
 
 1. Set the Publisher based on authenticated login.
@@ -257,3 +290,11 @@ has not been coded yet.
 
 10. The description field in each attribute is currently not used. The plan is to use it as a tooltip
 for each field.
+
+11. The Attribute Viewer was created quickly to test the basic features of the Attribute Editor.
+It uses a 'flat' controller model, a single controller handles the primary record and all the adornment
+records. It is not capable of handling User defined types. The structure should be changed such that
+the top controller of the Attribute Viewer only handles the primary record. An adornment controller
+should be attached to every adornment and a User datatype controller to every user defined datatype.
+This will create a structure that can easily handle arbritarily complex relationships in the data being
+viewed.
