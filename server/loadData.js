@@ -9,7 +9,7 @@ var Contractor = mongoose.model('Contractor');
 
 module.exports = function() {
     debug("loading licensed contractor data from CSV");
-    var input = fs.createReadStream(path.join(__dirname, '../assets/bllicense.csv'));
+    var input = fs.createReadStream(path.join(__dirname, '../assets/inspections.csv'));
     var parse = csv.parse({delimiter:','});
     var columns;
     var transform = csv.transform(function(record, callback){
