@@ -24,8 +24,16 @@ db.on('open', function(){
     .next(function(err, collinfo) {
         debug("got collection list");
         if (!collinfo) {
-            // The licensed contractor collection does not exist
-            process.nextTick(require('./loadData'));
+            // The contractor collection does not exist
+            process.nextTick(require('./loadData').contractors);
+        }
+    });
+    mongoose.connection.db.listCollections({name: 'inspections'})
+    .next(function(err, collinfo) {
+        debug("got collection list");
+        if (!collinfo) {
+            // The inspections collection does not exist
+            process.nextTick(require('./loadData').inspections);
         }
     });
 });

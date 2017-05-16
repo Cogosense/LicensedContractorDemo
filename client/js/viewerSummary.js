@@ -20,9 +20,10 @@ function(app, Templates) {
         '$uibModal',
         '$log',
         'popup',
+        'AttributeSetService',
         'uiGridConstants',
         'ApiAttributeService',
-        function($scope, $rootScope, $injector, $resource, $uibModal, $log, popup, uiGridConstants, ApiAttributeService){
+        function($scope, $rootScope, $injector, $resource, $uibModal, $log, popup, AttributeSetService, uiGridConstants, ApiAttributeService){
             console.log("activated the viewer summary controller");
 
             var Primary = null;
@@ -69,6 +70,65 @@ function(app, Templates) {
                     $log.info('Primary attribute set query failed with status: ' + response.status + 'data: ' + response.data);
                     popup.err('Primary Record Query Failed With Status ' + response.status, response.data);
                 });
+            };
+
+            function getAttributeSet(publisher_id) {
+                if(!$scope.currentAttributeSet) {
+                    return;
+                }
+                var ownerId = $scope.currentAttributeSet.ownerId;
+                var recordName = $scope.currentAttributeSet.recordName;
+                attributesMetaData = ApiAttributeService.get({publisher_id: publisher_id, owner_id: ownerId, name: recordName}, function(data){
+                    if(attributesMetaData.endPoint){
+                        Primary = $injector.instantiate(['$resource', function($resource){
+                            return $resource(attributesMetaData.endPoint, {id: '@_id'}, {
+                                update: {
+                                    method: 'PUT'
+                                }
+                            });
+                        }]);
+                        paginationOptions.select = [];
+                        $scope.gridOptions.columnDefs = [];
+                        for(var i = 0; i < attributesMetaData.attributes.length; ++i) {
+                            var attr = attributesMetaData.attributes[i];
+                            if(attr.summary){
+                                $scope.gridOptions.columnDefs.push({
+                                    enableHiding: false,
+                                    field: attr.name,
+                                    displayName: attr.label,
+                                    enableFiltering: attr.searchable
+                                });
+                            }
+                            /*
+                             * The restrict attribute is enforced by the server
+                             * when the Attribute Set is queried, based on
+                             * current publisher id and Attribute Set owner id.
+                             *
+                             * Therefore this check is redundant, but it is left in
+                             * in case the server is ever changed
+                             */
+                            if(!attr.restrict) {
+                                paginationOptions.select.push(attr.name);
+                            }
+                        }
+                        $scope.gridOptions.columnDefs.push({
+                            name:'Details',
+                            enableFiltering: false,
+                            enableColumnMenu: false,
+                            cellTemplate: '<div style="text-align:center"><button ng-click="grid.appScope.detailsGridRow(row)">Details</button></div>'
+                        });
+                    }
+                });
+            }
+
+            $scope.attributeSetList = AttributeSetService.query();
+            $scope.currentAttributeSet = null;
+
+            $scope.changeAttributeSet = function(){
+                console.log("changeAttributeSet() clicked");
+                if($rootScope.currentPublisher) {
+                    getAttributeSet($rootScope.currentPublisher._id);
+                }
             };
 
             $scope.gridOptions = {
@@ -141,47 +201,7 @@ function(app, Templates) {
 
             $scope.$on('changePublisher', function(event, publisher_id) {
                 console.log("changePublisher() event received");
-                attributesMetaData = ApiAttributeService.get({publisher_id: publisher_id, owner_id: '575762eeb84836f47d31a57f', name: 'Bingo'}, function(data){
-                    if(attributesMetaData.endPoint){
-                        Primary = $injector.instantiate(['$resource', function($resource){
-                            return $resource(attributesMetaData.endPoint, {id: '@_id'}, {
-                                update: {
-                                    method: 'PUT'
-                                }
-                            });
-                        }]);
-                        paginationOptions.select = [];
-                        $scope.gridOptions.columnDefs = [];
-                        for(var i = 0; i < attributesMetaData.attributes.length; ++i) {
-                            var attr = attributesMetaData.attributes[i];
-                            if(attr.summary){
-                                $scope.gridOptions.columnDefs.push({
-                                    enableHiding: false,
-                                    field: attr.name,
-                                    displayName: attr.label,
-                                    enableFiltering: attr.searchable
-                                });
-                            }
-                            /*
-                             * The restrict attribute is enforced by the server
-                             * when the Attribute Set is queried, based on
-                             * current publisher id and Attribute Set owner id.
-                             *
-                             * Therefore this check is redundant, but it is left in
-                             * in case the server is ever changed
-                             */
-                            if(!attr.restrict) {
-                                paginationOptions.select.push(attr.name);
-                            }
-                        }
-                        $scope.gridOptions.columnDefs.push({
-                            name:'Details',
-                            enableFiltering: false,
-                            enableColumnMenu: false,
-                            cellTemplate: '<div style="text-align:center"><button ng-click="grid.appScope.detailsGridRow(row)">Details</button></div>'
-                        });
-                    }
-                });
+                getAttributeSet(publisher_id);
             });
         }
     ]);

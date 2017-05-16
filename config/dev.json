@@ -3,6 +3,6 @@
         "secure": false
     },
     "database":{
-        "url": "mongodb://localhost:27017/bcsa"
+        "url": "mongodb://localhost:27017/dev"
     }
 }

@@ -68,4 +68,8 @@ block content
 
         uib-tab(index="2" heading="Summary Viewer")
             div(ng-controller="viewerSummaryController")
+                .form-group
+                    label(for="attribute-set-slect") Attribute Set Name
+                    select.form-control#attribute-set-select(required ng-model="currentAttributeSet" ng-change="changeAttributeSet()" ng-options="(val.recordName + ' (' + $root.publisherLookup[val.ownerId].publisherName + ')') for val in attributeSetList")
+                        option(value='' disabled hidden selected='selected') Please Set the Attribute Set
                 .primaryGrid#primaryGrid1(ui-grid="gridOptions" ui-grid-pagination)
