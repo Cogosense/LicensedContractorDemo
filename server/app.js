@@ -20,22 +20,7 @@ var app = express();
 mongoose.connect(config.get('database.url'));
 var db = mongoose.connection;
 db.on('open', function(){
-    mongoose.connection.db.listCollections({name: 'contractors'})
-    .next(function(err, collinfo) {
-        debug("got collection list");
-        if (!collinfo) {
-            // The contractor collection does not exist
-            process.nextTick(require('./loadData').contractors);
-        }
-    });
-    mongoose.connection.db.listCollections({name: 'inspections'})
-    .next(function(err, collinfo) {
-        debug("got collection list");
-        if (!collinfo) {
-            // The inspections collection does not exist
-            process.nextTick(require('./loadData').inspections);
-        }
-    });
+    require('./loadData').autoUpdate();
 });
 
 // view engine setup
