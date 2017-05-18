@@ -11,6 +11,7 @@ var inspectionSchema = mongoose.Schema({
     PERMITNUMBER                : String,
     PERMITTYPE                  : String,
     BUILDINGOCCUPANCYTYPE       : String,
+	INSPECTIONNONCOMPLIANCEID   : String,
     NONCOMPLIANCENAME           : String,
     NONCOMPLIANCEDESCRIPTION    : String
 });
