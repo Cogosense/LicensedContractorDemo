@@ -1,0 +1,38 @@
+FROM centos:7
+
+RUN yum update -y
+
+RUN yum install -y gcc-c++ make epel-release git xdg-utils
+
+RUN yum install -y nodejs
+
+RUN npm install -g bower grunt nodemon xdg-utils
+
+RUN useradd bcsa
+
+USER bcsa
+
+ENV HOME /home/bcsa
+
+WORKDIR $HOME
+
+RUN git clone https://development:o6qQDm1KvzhFWMJKOaD6@bitbucket.safetyauthority.ca/scm/ds/licensed-contractor.git
+
+WORKDIR $HOME/licensed-contractor
+
+RUN npm install && npm install bower grunt xdg-utils
+
+RUN bower install
+
+RUN sed -i "s/localhost/bcsa-db/g" ./config/dev.json
+
+ENV NODE_ENV dev
+
+EXPOSE 3000 
+
+#CMD bash
+
+RUN grunt demo
+
+#RUN nodemon -w server bin/www
+
