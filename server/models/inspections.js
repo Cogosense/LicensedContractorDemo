@@ -4,7 +4,7 @@ mongoose.plugin(require('mongoose-write-stream'));
 // define the schema for our contractor model
 var inspectionSchema = mongoose.Schema({
     row                         : Number,
-    INSPECTIONDATE              : Date,
+    INSPECTIONDATE              : String,
     INSPECTIONNUMBER            : String,
     INSPECTIONTYPE              : String,
     INSPECTIONSTATUS            : String,
