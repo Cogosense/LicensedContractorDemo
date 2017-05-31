@@ -1,0 +1,30 @@
+
+  web:
+    restart: always
+    build: .
+    dockerfile: Dockerfile-lc
+    container_name: bcsa-lc
+    ports:
+     - "3000:3000"
+     - "5858:5858"
+#     - "8080:8080"
+     - "35729:35729"
+    environment:
+     - NODE_ENV=dev
+    volumes:
+     - $PWD/assets:/home/bcsa/licensed-contractor/assets
+    links:
+     - db
+    command: " nodemon -w server bin/www"
+  db:
+    image: mongo:3.2
+    restart: always
+    container_name: bcsa-db
+    ports:
+     - "27017:27017"
+    volumes:
+      - $PWD/db/data:/data/db
+      - $PWD/db/var/lib/mongodb:/var/lib/mongodb
+      - $PWD/db/var/log/mongodb:/var/log/mongodb
+#    entrypoint: /bin/true
+#
