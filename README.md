@@ -21,8 +21,8 @@ and optionally to continue development the following tools are extremely useful:
 
 1. Clone the gitlab repository:
 
-        git clone https://collab.safetyauthority.ca/sis/licensed-contractor.git
-        cd licensed-contractor
+        git clone https://github.com/Cogosense/LicensedContractorDemo
+        cd LicensedContractorDemo
 
 2. Install components:
 
